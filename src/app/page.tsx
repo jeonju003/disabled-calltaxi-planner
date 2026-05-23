@@ -11,6 +11,10 @@ import { HourHeatmap } from "@/components/HourHeatmap";
 import { DesktopNav, MobileNav } from "@/components/MobileNav";
 import { SavedCalendar } from "@/components/SavedCalendar";
 import { SchedulePlanner } from "@/components/SchedulePlanner";
+import {
+  CallTaxiApplyFab,
+  CallTaxiApplyPanel,
+} from "@/components/CallTaxiApplyPanel";
 
 export default function HomePage() {
   const [tab, setTab] = useState<AppTab>("pattern");
@@ -138,6 +142,8 @@ export default function HomePage() {
           </div>
         </header>
 
+        <CallTaxiApplyPanel />
+
         {(tab === "pattern" || tab === "daily") && (
           <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
             <span className="flex-1 min-w-[200px]">
@@ -227,6 +233,8 @@ export default function HomePage() {
 
         {tab === "calendar" && <SavedCalendar />}
       </main>
+
+      <CallTaxiApplyFab />
 
       <MobileNav
         active={tab}

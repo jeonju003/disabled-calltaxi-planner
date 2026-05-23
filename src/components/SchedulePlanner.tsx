@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ScheduleAdvice } from "@/lib/types";
 import { saveFromAdvice } from "@/lib/calendar-storage";
 import { notifyCalendarUpdated } from "@/components/SavedCalendar";
+import { CALLTAXI_LINKS } from "@/lib/constants/calltaxi-links";
 import { cn } from "@/lib/utils/cn";
 
 function levelBadge(level: string) {
@@ -183,6 +184,14 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             </div>
           )}
           <div className="flex flex-wrap gap-2 pt-2">
+            <a
+              href={CALLTAXI_LINKS.internetCall}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 min-w-[140px] rounded-xl bg-sky-600 px-4 py-3 text-center text-sm font-semibold text-white active:bg-sky-700"
+            >
+              공식 사이트에서 콜 접수
+            </a>
             <button
               type="button"
               onClick={handleSave}
