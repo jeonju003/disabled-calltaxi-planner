@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Noto_Sans_KR } from "next/font/google";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { PwaRegister } from "@/components/PwaRegister";
 import "./globals.css";
+
+const notoSans = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "장애인 콜택시 일정 도우미",
@@ -22,21 +30,23 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#0284c7",
+  themeColor: "#7DD3FC",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={notoSans.variable}>
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
       </head>
-      <body className="min-h-screen antialiased">
-        <PwaRegister />
-        {children}
-        <InstallPrompt />
+      <body className={`${notoSans.className} min-h-screen antialiased`}>
+        <div className="app-shell">
+          <PwaRegister />
+          {children}
+          <InstallPrompt />
+        </div>
       </body>
     </html>
   );

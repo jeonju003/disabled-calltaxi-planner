@@ -68,15 +68,24 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
     onSaved?.();
   }
 
-  return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900">약속 일정 도우미</h2>
-      <p className="mt-1 text-sm text-slate-600">
-        약속 시간을 입력하면 콜 접수 권장 시각과 그 시간대의 이용 난이도를
-        알려드립니다.
-      </p>
+  const inputClass = "input-hope mt-1 w-full px-3 py-2.5 text-base sm:text-sm";
 
-      <form onSubmit={onSubmit} className="mt-4 grid gap-4 sm:grid-cols-2">
+  return (
+    <section className="card-hope-warm p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="section-icon shrink-0" aria-hidden>
+          🗓️
+        </span>
+        <div>
+          <h2 className="text-lg font-bold text-slate-800">약속 일정 도우미</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            약속 시간을 입력하면 콜 접수 권장 시각과 그 시간대의 이용 난이도를
+            알려드립니다.
+          </p>
+        </div>
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="block sm:col-span-2">
           <span className="text-sm font-medium text-slate-700">일정 제목</span>
           <input
@@ -84,7 +93,7 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             placeholder="예: 병원 진료, 친구 모임"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base sm:text-sm"
+            className={inputClass}
           />
         </label>
         <label className="block sm:col-span-2">
@@ -94,7 +103,7 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             required
             value={appointmentAt}
             onChange={(e) => setAppointmentAt(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base sm:text-sm"
+            className={inputClass}
           />
         </label>
         <label className="block sm:col-span-2">
@@ -104,7 +113,7 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             placeholder="출발지, 동행 등"
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base sm:text-sm"
+            className={inputClass}
           />
         </label>
         <label className="block">
@@ -117,7 +126,7 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             max={120}
             value={travelMinutes}
             onChange={(e) => setTravelMinutes(Number(e.target.value))}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base sm:text-sm"
+            className={inputClass}
           />
         </label>
         <label className="block">
@@ -130,13 +139,13 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
             max={60}
             value={bufferMinutes}
             onChange={(e) => setBufferMinutes(Number(e.target.value))}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base sm:text-sm"
+            className={inputClass}
           />
         </label>
         <button
           type="submit"
           disabled={loading}
-          className="sm:col-span-2 rounded-xl bg-sky-600 px-4 py-3.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-60 active:bg-sky-800"
+          className="btn-primary sm:col-span-2 rounded-xl px-4 py-3.5 text-sm font-bold disabled:opacity-60"
         >
           {loading ? "분석 중…" : "일정 추천 받기"}
         </button>
@@ -149,7 +158,7 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
       )}
 
       {advice && (
-        <div className="mt-5 space-y-3 rounded-xl bg-slate-50 p-4">
+        <div className="mt-5 space-y-3 rounded-2xl border border-sky-100 bg-gradient-to-br from-sky-50/90 to-amber-50/50 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span
               className={cn(
@@ -188,14 +197,14 @@ export function SchedulePlanner({ onSaved }: { onSaved?: () => void }) {
               href={CALLTAXI_LINKS.internetCall}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 min-w-[140px] rounded-xl bg-sky-600 px-4 py-3 text-center text-sm font-semibold text-white active:bg-sky-700"
+              className="btn-primary flex-1 min-w-[140px] rounded-xl px-4 py-3 text-center text-sm font-bold"
             >
               공식 사이트에서 콜 접수
             </a>
             <button
               type="button"
               onClick={handleSave}
-              className="flex-1 min-w-[140px] rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white active:bg-emerald-700"
+              className="flex-1 min-w-[140px] rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-bold text-white shadow-md shadow-emerald-300/40 active:scale-[0.98]"
             >
               캘린더에 저장
             </button>

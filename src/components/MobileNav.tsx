@@ -21,7 +21,7 @@ export function MobileNav({
 }) {
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      className="fixed bottom-0 inset-x-0 z-50 border-t border-sky-200/60 bg-white/92 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_24px_rgba(14,165,233,0.1)] backdrop-blur-md md:hidden"
       aria-label="주 메뉴"
     >
       <ul className="mx-auto flex max-w-lg">
@@ -31,20 +31,30 @@ export function MobileNav({
               type="button"
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex w-full flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
+                "flex w-full flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold transition-all",
                 active === tab.id
                   ? "text-sky-700"
-                  : "text-slate-500 active:text-slate-800",
+                  : "text-slate-500 active:text-slate-700",
               )}
               aria-current={active === tab.id ? "page" : undefined}
             >
-              <span className="relative text-lg leading-none" aria-hidden>
-                {tab.icon}
-                {tab.id === "calendar" && calendarCount != null && calendarCount > 0 && (
-                  <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-sky-600 px-1 text-[9px] text-white">
-                    {calendarCount > 9 ? "9+" : calendarCount}
-                  </span>
+              <span
+                className={cn(
+                  "relative flex h-9 w-9 items-center justify-center rounded-2xl text-lg leading-none transition-all",
+                  active === tab.id
+                    ? "bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-md shadow-sky-300/50"
+                    : "bg-sky-50/80",
                 )}
+                aria-hidden
+              >
+                {tab.icon}
+                {tab.id === "calendar" &&
+                  calendarCount != null &&
+                  calendarCount > 0 && (
+                    <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-400 px-1 text-[9px] font-bold text-amber-950">
+                      {calendarCount > 9 ? "9+" : calendarCount}
+                    </span>
+                  )}
               </span>
               {tab.label}
             </button>
@@ -64,7 +74,7 @@ export function DesktopNav({
 }) {
   return (
     <nav
-      className="hidden md:flex gap-1 rounded-xl bg-slate-100 p-1"
+      className="hidden md:flex gap-2 rounded-2xl border border-sky-200/50 bg-white/70 p-1.5 shadow-sm backdrop-blur-sm"
       aria-label="주 메뉴"
     >
       {TABS.map((tab) => (
@@ -73,12 +83,13 @@ export function DesktopNav({
           type="button"
           onClick={() => onChange(tab.id)}
           className={cn(
-            "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+            "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all",
             active === tab.id
-              ? "bg-white text-sky-800 shadow-sm"
-              : "text-slate-600 hover:text-slate-900",
+              ? "bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-md shadow-sky-300/40"
+              : "text-slate-600 hover:bg-sky-50 hover:text-sky-800",
           )}
         >
+          <span aria-hidden>{tab.icon}</span>
           {tab.label}
         </button>
       ))}

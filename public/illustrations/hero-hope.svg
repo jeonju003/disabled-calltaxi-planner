@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" fill="none" role="img" aria-label="@ X˜ü tÙD ÁÕX” |ì¤¸">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7DD3FC"/>
+      <stop offset="55%" stop-color="#E0F2FE"/>
+      <stop offset="100%" stop-color="#FEF9C3"/>
+    </linearGradient>
+    <linearGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(620 72) rotate(90) scale(56)">
+      <stop stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#7DD3FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="320" fill="url(#sky)"/>
+  <circle cx="620" cy="72" r="48" fill="url(#sun)" opacity="0.95"/>
+  <g opacity="0.5">
+    <ellipse cx="120" cy="88" rx="70" ry="22" fill="#fff"/>
+    <ellipse cx="280" cy="58" rx="90" ry="28" fill="#fff"/>
+    <ellipse cx="480" cy="98" rx="80" ry="24" fill="#fff"/>
+  </g>
+  <path d="M0 220 Q200 180 400 210 T800 200 L800 320 L0 320 Z" fill="#DCFCE7" opacity="0.9"/>
+  <path d="M0 250 Q250 220 500 245 T800 235 L800 320 L0 320 Z" fill="url(#road)" opacity="0.35"/>
+  <g transform="translate(280 155)">
+    <rect x="40" y="55" width="200" height="72" rx="16" fill="#0EA5E9"/>
+    <rect x="55" y="70" width="170" height="42" rx="8" fill="#E0F2FE"/>
+    <circle cx="85" cy="135" r="22" fill="#0369A1"/>
+    <circle cx="85" cy="135" r="12" fill="#BAE6FD"/>
+    <circle cx="215" cy="135" r="22" fill="#0369A1"/>
+    <circle cx="215" cy="135" r="12" fill="#BAE6FD"/>
+    <path d="M30 55 H70 L90 25 H190 L210 55" fill="#38BDF8"/>
+    <rect x="100" y="32" width="60" height="28" rx="6" fill="#FEF08A" opacity="0.9"/>
+    <circle cx="240" cy="45" r="8" fill="#FDE68A"/>
+  </g>
+  <g transform="translate(520 170)">
+    <circle cx="30" cy="90" r="28" fill="#F472B6" opacity="0.8"/>
+    <path d="M30 62 C45 40 75 40 90 62 L90 120 C75 135 45 135 30 120 Z" fill="#FDA4AF"/>
+    <circle cx="52" cy="55" r="14" fill="#FECDD3"/>
+  </g>
+  <g transform="translate(100 185)" opacity="0.85">
+    <rect x="0" y="40" width="12" height="50" rx="4" fill="#34D399"/>
+    <circle cx="6" cy="30" r="22" fill="#6EE7B7"/>
+    <circle cx="6" cy="30" r="10" fill="#A7F3D0"/>
+  </g>
+  <path d="M650 250 L720 200 L780 250" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+</svg>

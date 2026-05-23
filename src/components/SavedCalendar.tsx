@@ -42,8 +42,11 @@ export function SavedCalendar() {
 
   if (items.length === 0 && past.length === 0) {
     return (
-      <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
-        <p className="text-slate-600 text-sm">
+      <section className="card-hope border-dashed border-sky-300/50 p-8 text-center">
+        <p className="text-4xl mb-3" aria-hidden>
+          📅
+        </p>
+        <p className="text-slate-700 text-sm font-medium">
           저장된 일정이 없습니다.
         </p>
         <p className="mt-2 text-xs text-slate-500">
@@ -57,7 +60,12 @@ export function SavedCalendar() {
     <div className="space-y-6">
       {items.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">다가오는 일정</h2>
+          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800">
+            <span className="section-icon text-sm" aria-hidden>
+              ✨
+            </span>
+            다가오는 일정
+          </h2>
           {items.map((item) => (
             <AppointmentCard
               key={item.id}
@@ -107,8 +115,8 @@ function AppointmentCard({
   return (
     <article
       className={cn(
-        "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm",
-        muted && "bg-slate-50",
+        "card-hope p-4",
+        muted && "opacity-75",
       )}
     >
       <div className="flex items-start justify-between gap-2">

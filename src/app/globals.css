@@ -1,15 +1,153 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f1f5f9;
-  --foreground: #0f172a;
+  --background: #fffbeb;
+  --foreground: #1e3a5f;
+  --card: rgba(255, 255, 255, 0.88);
+  --card-border: rgba(14, 165, 233, 0.18);
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
+  --accent: #f59e0b;
+  --accent-soft: #fef3c7;
+  --hope-green: #34d399;
+  --hope-pink: #fda4af;
+  --shadow-soft: 0 8px 32px rgba(14, 165, 233, 0.12);
+  --shadow-card: 0 4px 24px rgba(30, 58, 95, 0.06);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-family: var(--font-sans), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   -webkit-tap-highlight-color: transparent;
+  min-height: 100vh;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(
+    165deg,
+    #e0f2fe 0%,
+    #fef9c3 35%,
+    #fff7ed 65%,
+    #fce7f3 100%
+  );
+  overflow-x: hidden;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-shell::before {
+  width: 280px;
+  height: 280px;
+  top: -80px;
+  right: -60px;
+  background: rgba(251, 191, 36, 0.35);
+}
+
+.app-shell::after {
+  width: 320px;
+  height: 320px;
+  bottom: 120px;
+  left: -100px;
+  background: rgba(52, 211, 153, 0.25);
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+.card-hope {
+  border-radius: 1.25rem;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+}
+
+.card-hope-warm {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(254, 243, 199, 0.6) 100%
+  );
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-soft);
+}
+
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  font-size: 1.125rem;
+  background: linear-gradient(135deg, #bae6fd, #fef08a);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.input-hope {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.input-hope:focus {
+  outline: 2px solid rgba(14, 165, 233, 0.35);
+  outline-offset: 1px;
+}
+
+.notice-info {
+  border-radius: 1rem;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  background: linear-gradient(90deg, rgba(224, 242, 254, 0.9), rgba(255, 255, 255, 0.85));
+}
+
+.notice-warm {
+  border-radius: 1rem;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: linear-gradient(90deg, rgba(254, 243, 199, 0.85), rgba(255, 255, 255, 0.8));
+}
+
+.loading-pulse {
+  animation: hope-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hope-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 input,

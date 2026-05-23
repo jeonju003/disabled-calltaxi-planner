@@ -46,8 +46,8 @@ export function InstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-[calc(7.5rem+env(safe-area-inset-bottom))] left-3 right-3 z-40 mx-auto max-w-lg rounded-2xl border border-sky-200 bg-sky-50 p-4 shadow-lg md:bottom-4">
-      <p className="text-sm font-medium text-sky-950">홈 화면에 추가</p>
+    <div className="fixed bottom-[calc(7.5rem+env(safe-area-inset-bottom))] left-3 right-3 z-40 mx-auto max-w-lg card-hope-warm p-4 shadow-lg md:bottom-4">
+      <p className="text-sm font-bold text-sky-900">홈 화면에 추가</p>
       <p className="mt-1 text-xs text-sky-900/80">
         앱처럼 설치하면 일정·콜 접수 시각을 더 빠르게 확인할 수 있습니다.
       </p>
@@ -55,7 +55,7 @@ export function InstallPrompt() {
         <button
           type="button"
           onClick={install}
-          className="flex-1 rounded-xl bg-sky-600 py-2.5 text-sm font-semibold text-white"
+          className="btn-primary flex-1 rounded-xl py-2.5 text-sm font-bold"
         >
           설치
         </button>

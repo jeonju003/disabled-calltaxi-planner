@@ -5,6 +5,7 @@ import type { AppTab, CallTaxiTrip, PatternAnalysis } from "@/lib/types";
 import { generateDemoTrips } from "@/lib/analyze";
 import { buildPatternAnalysisFromTrips } from "@/lib/pattern-data";
 import { upcomingAppointments } from "@/lib/calendar-storage";
+import { AppHero } from "@/components/AppHero";
 import { BestTimes } from "@/components/BestTimes";
 import { DailyStatsPanel } from "@/components/DailyStatsPanel";
 import { HourHeatmap } from "@/components/HourHeatmap";
@@ -68,7 +69,7 @@ export default function HomePage() {
                 allTrips.push(...(data.trips as CallTaxiTrip[]));
               }
             } catch {
-              /* 해당 날짜만 건너뜀 */
+              /* skip day */
             }
           }
 
@@ -127,36 +128,32 @@ export default function HomePage() {
   }, [days, tab, patternReload]);
 
   return (
-    <>
-      <main className="mx-auto max-w-5xl px-4 pt-6 pb-28 sm:px-6 md:pb-10">
-        <header className="mb-6">
-          <p className="text-sm font-medium text-sky-700">서울 장애인 콜택시</p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            일정·이용 도우미
-          </h1>
-          <p className="mt-2 text-sm text-slate-600 leading-relaxed sm:text-base">
-            시간대 패턴·일별 통계·약속 일정을 한곳에서 확인합니다.
-          </p>
-          <div className="mt-4">
-            <DesktopNav active={tab} onChange={setTab} />
-          </div>
-        </header>
+  <>
+      <main className="app-content mx-auto max-w-5xl px-4 pt-5 pb-32 sm:px-6 md:pb-12">
+        <AppHero />
+
+        <div className="mb-5">
+          <DesktopNav active={tab} onChange={setTab} />
+        </div>
 
         <CallTaxiApplyPanel />
 
         {(tab === "pattern" || tab === "daily") && (
-          <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-            <span className="flex-1 min-w-[200px]">
+          <div className="notice-warm mb-4 flex flex-wrap items-center gap-3 px-4 py-3 text-sm text-amber-950">
+            <span className="flex items-center gap-2 flex-1 min-w-[200px]">
+              <span className="section-icon" aria-hidden>
+                💡
+              </span>
               공공데이터는 <strong>최소 하루 전</strong> 기준입니다. 참고용으로
               활용하세요.
             </span>
             {tab === "pattern" && (
-              <label className="flex items-center gap-2 text-slate-700 text-sm">
+              <label className="flex items-center gap-2 text-slate-700 text-sm font-medium">
                 분석 기간
                 <select
                   value={days}
                   onChange={(e) => setDays(Number(e.target.value))}
-                  className="rounded-lg border border-slate-300 bg-white px-2 py-1.5"
+                  className="input-hope px-2 py-1.5"
                 >
                   <option value={7}>7일</option>
                   <option value={14}>14일</option>
@@ -168,7 +165,7 @@ export default function HomePage() {
         )}
 
         {notice && tab === "pattern" && (
-          <p className="mb-4 rounded-lg bg-sky-50 px-4 py-2 text-sm text-sky-900">
+          <p className="notice-info mb-4 px-4 py-3 text-sm text-sky-900">
             {notice}
           </p>
         )}
@@ -176,20 +173,22 @@ export default function HomePage() {
         {tab === "pattern" && (
           <>
             {loading && (
-              <div className="py-16 text-center text-slate-500 space-y-2">
-                <p>패턴 분석 중…</p>
+              <div className="card-hope py-16 text-center text-slate-600 space-y-3">
+                <p className="text-lg font-medium loading-pulse">
+                  ✨ 패턴 분석 중…
+                </p>
                 {loadingHint && (
-                  <p className="text-sm text-slate-400 px-4">{loadingHint}</p>
+                  <p className="text-sm text-sky-700/80 px-4">{loadingHint}</p>
                 )}
               </div>
             )}
             {error && (
-              <div className="rounded-lg bg-rose-50 px-4 py-3 text-rose-700 space-y-2">
+              <div className="card-hope border-rose-200/50 bg-rose-50/80 px-4 py-4 text-rose-800 space-y-2">
                 <p>{error}</p>
                 <button
                   type="button"
                   onClick={() => setPatternReload((k) => k + 1)}
-                  className="text-sm font-medium text-rose-800 underline"
+                  className="text-sm font-semibold text-rose-700 underline"
                 >
                   다시 시도
                 </button>
@@ -199,18 +198,24 @@ export default function HomePage() {
               <div className="space-y-6">
                 <div className="grid gap-3 grid-cols-2 sm:grid-cols-3">
                   <StatCard
+                    icon="📊"
                     label="분석 건수"
                     value={`${analysis.totalTrips.toLocaleString()}건`}
+                    tint="sky"
                   />
                   <StatCard
+                    icon="🌐"
                     label="데이터"
                     value={
                       analysis.dataSource === "api" ? "서울 Open API" : "데모"
                     }
+                    tint="amber"
                   />
                   <StatCard
+                    icon="📅"
                     label="분석 일수"
                     value={`${analysis.analyzedDays}일`}
+                    tint="emerald"
                   />
                 </div>
                 <BestTimes analysis={analysis} />
@@ -232,6 +237,13 @@ export default function HomePage() {
         )}
 
         {tab === "calendar" && <SavedCalendar />}
+
+        <footer className="mt-10 text-center text-xs text-slate-500/90 leading-relaxed pb-4">
+          <p>데이터: 서울특별시 장애인콜시스템 · 공공누리 출처표시</p>
+          <p className="mt-1 text-sky-700/70">
+            더 밝은 하루, 편안한 이동을 응원합니다 🌤️
+          </p>
+        </footer>
       </main>
 
       <CallTaxiApplyFab />
@@ -245,11 +257,31 @@ export default function HomePage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  tint,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  tint: "sky" | "amber" | "emerald";
+}) {
+  const tints = {
+    sky: "from-sky-100/80 to-white border-sky-200/40",
+    amber: "from-amber-100/80 to-white border-amber-200/40",
+    emerald: "from-emerald-100/80 to-white border-emerald-200/40",
+  };
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-1 text-base font-semibold text-slate-900 sm:text-lg">
+    <div
+      className={`card-hope bg-gradient-to-br ${tints[tint]} px-4 py-3.5`}
+    >
+      <p className="flex items-center gap-1.5 text-xs font-medium text-slate-600">
+        <span aria-hidden>{icon}</span>
+        {label}
+      </p>
+      <p className="mt-1.5 text-base font-bold text-slate-800 sm:text-lg">
         {value}
       </p>
     </div>

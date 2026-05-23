@@ -49,8 +49,8 @@ export function DailyStatsPanel({ days }: { days: number }) {
 
   if (loading) {
     return (
-      <p className="py-12 text-center text-slate-500 text-sm">
-        일별 이용현황 불러오는 중…
+      <p className="card-hope py-12 text-center text-sky-700 text-sm loading-pulse">
+        📈 일별 이용현황 불러오는 중…
       </p>
     );
   }
@@ -70,7 +70,7 @@ export function DailyStatsPanel({ days }: { days: number }) {
   return (
     <div className="space-y-4">
       {data.notice && (
-        <p className="rounded-lg bg-sky-50 px-4 py-2 text-sm text-sky-900">
+        <p className="notice-info px-4 py-2 text-sm text-sky-900">
           {data.notice}
         </p>
       )}
@@ -99,14 +99,14 @@ export function DailyStatsPanel({ days }: { days: number }) {
         />
       </div>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">
+      <section className="card-hope p-4 sm:p-5">
+        <h2 className="text-base font-bold text-slate-800">
           일별 평균 대기시간
         </h2>
         <p className="mt-1 text-xs text-slate-500">
           {data.dateRange.from} ~ {data.dateRange.to}
         </p>
-        <div className="mt-4 flex items-end gap-1 overflow-x-auto pb-2 min-h-[140px]">
+        <div className="mt-4 flex items-end gap-1 overflow-x-auto rounded-xl bg-sky-50/50 p-2 pb-2 min-h-[140px]">
           {data.stats.map((s) => {
             const h = Math.max(12, (s.avgWaitMinutes / maxWait) * 100);
             const level =
@@ -127,9 +127,9 @@ export function DailyStatsPanel({ days }: { days: number }) {
                 <div
                   className={cn(
                     "w-full max-w-[36px] rounded-t-md",
-                    level === "easy" && "bg-emerald-400",
-                    level === "moderate" && "bg-amber-300",
-                    level === "busy" && "bg-rose-400",
+                    level === "easy" && "bg-gradient-to-t from-teal-300 to-emerald-400",
+                    level === "moderate" && "bg-gradient-to-t from-amber-200 to-amber-300",
+                    level === "busy" && "bg-gradient-to-t from-orange-300 to-rose-300",
                   )}
                   style={{ height: `${h}px` }}
                 />
@@ -142,8 +142,8 @@ export function DailyStatsPanel({ days }: { days: number }) {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-        <h2 className="px-4 pt-4 text-base font-semibold text-slate-900">
+      <section className="card-hope overflow-hidden">
+        <h2 className="px-4 pt-4 text-base font-bold text-slate-800">
           일별 상세
         </h2>
         <div className="mt-2 overflow-x-auto">
@@ -181,7 +181,7 @@ export function DailyStatsPanel({ days }: { days: number }) {
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+    <div className="card-hope bg-gradient-to-br from-white to-sky-50/50 px-3 py-2">
       <p className="text-[10px] text-slate-500">{label}</p>
       <p className="mt-0.5 text-sm font-semibold text-slate-900">{value}</p>
     </div>

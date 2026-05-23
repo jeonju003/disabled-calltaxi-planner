@@ -19,12 +19,13 @@ function ExternalLink({
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition-colors active:scale-[0.98]";
+    "inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition-all active:scale-[0.98]";
   const styles = {
-    primary: "bg-sky-600 text-white hover:bg-sky-700 shadow-sm",
-    secondary: "bg-white text-sky-900 border border-sky-200 hover:bg-sky-50",
+    primary: "btn-primary",
+    secondary:
+      "bg-white/95 text-sky-900 border border-sky-200/60 hover:bg-sky-50 shadow-sm",
     outline:
-      "bg-transparent text-slate-700 border border-slate-300 hover:bg-slate-50",
+      "bg-white/60 text-slate-700 border border-amber-200/50 hover:bg-amber-50/80",
   };
   return (
     <a
@@ -49,20 +50,23 @@ export function CallTaxiApplyPanel() {
 
   return (
     <section
-      className="mb-6 rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-4 shadow-sm sm:p-5"
+      className="card-hope-warm mb-6 overflow-hidden p-4 sm:p-5"
       aria-labelledby="calltaxi-apply-heading"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex gap-3">
+        <span className="section-icon shrink-0" aria-hidden>
+          🚕
+        </span>
         <div>
           <h2
             id="calltaxi-apply-heading"
-            className="text-base font-bold text-slate-900 sm:text-lg"
+            className="text-base font-bold text-slate-800 sm:text-lg"
           >
             장애인 콜택시 신청·접수
           </h2>
           <p className="mt-1 text-sm text-slate-600 leading-relaxed">
-            회원 등록 후 앱·인터넷·전화로 콜을 접수할 수 있습니다. 아래 버튼을
-            누르면 공식 사이트·앱으로 이동합니다.
+            회원 등록 후 앱·인터넷·전화로 콜을 접수할 수 있습니다. 한 번의
+            클릭으로 공식 채널로 이동합니다.
           </p>
         </div>
       </div>
@@ -73,7 +77,7 @@ export function CallTaxiApplyPanel() {
           variant="primary"
           className="sm:col-span-2 min-h-[48px] text-base"
         >
-          콜택시 바로 신청하기
+          ✨ 콜택시 바로 신청하기
         </ExternalLink>
         <ExternalLink href={CALLTAXI_LINKS.join} variant="secondary">
           회원가입·이용등록
@@ -89,37 +93,34 @@ export function CallTaxiApplyPanel() {
         </ExternalLink>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-sky-100 pt-3 text-sm">
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-amber-200/40 pt-3 text-sm">
         <a
           href={CALLTAXI_LINKS.phoneTel}
-          className="font-semibold text-sky-800 underline-offset-2 hover:underline"
+          className="rounded-lg bg-sky-100/80 px-2.5 py-1 font-semibold text-sky-800"
         >
-          전화 {CALLTAXI_LINKS.phoneDisplay}
+          📞 {CALLTAXI_LINKS.phoneDisplay}
         </a>
-        <span className="text-slate-400">·</span>
         <a
           href={CALLTAXI_LINKS.guide}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-slate-600 underline-offset-2 hover:text-sky-800 hover:underline"
+          className="text-slate-600 hover:text-sky-700 underline-offset-2 hover:underline"
         >
-          이용방법 안내
+          이용방법
         </a>
-        <span className="text-slate-400">·</span>
         <a
           href={CALLTAXI_LINKS.home}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-slate-600 underline-offset-2 hover:text-sky-800 hover:underline"
+          className="text-slate-600 hover:text-sky-700 underline-offset-2 hover:underline"
         >
-          공식 홈페이지
+          공식 홈
         </a>
       </div>
     </section>
   );
 }
 
-/** 모바일 하단 고정 빠른 신청 버튼 */
 export function CallTaxiApplyFab() {
   const [primaryUrl, setPrimaryUrl] = useState<string>(
     CALLTAXI_LINKS.internetCall,
@@ -134,8 +135,9 @@ export function CallTaxiApplyFab() {
       href={primaryUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-[calc(4.25rem+env(safe-area-inset-bottom))] left-4 right-4 z-40 mx-auto flex max-w-lg items-center justify-center rounded-full bg-sky-600 py-3.5 text-center text-sm font-bold text-white shadow-lg active:bg-sky-700 md:hidden"
+      className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-4 right-4 z-40 mx-auto flex max-w-lg items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-sky-600 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-sky-400/40 active:scale-[0.98] md:hidden"
     >
+      <span aria-hidden>🚕</span>
       콜택시 신청하기
     </a>
   );

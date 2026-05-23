@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "서울 장애인 콜택시 이용 패턴과 약속 일정·콜 접수 시각을 안내합니다.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f1f5f9",
-    theme_color: "#0284c7",
+    background_color: "#fef9c3",
+    theme_color: "#7DD3FC",
     orientation: "portrait-primary",
     lang: "ko",
     icons: [
