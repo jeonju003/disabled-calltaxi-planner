@@ -90,13 +90,14 @@ export function normalizeTrips(trips: CallTaxiTrip[]): CallTaxiTrip[] {
 export function buildPatternAnalysisFromTrips(
   trips: CallTaxiTrip[],
   days: number,
+  dataSource: "api" | "demo" = "api",
 ) {
   const normalized = normalizeTrips(trips);
   const from = daysAgo(days);
   const to = daysAgo(1);
   const analysis = analyzeTrips(normalized, {
     analyzedDays: days,
-    dataSource: "api",
+    dataSource,
     dateRange: { from: formatYmd(from), to: formatYmd(to) },
   });
   return {

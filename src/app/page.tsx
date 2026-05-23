@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { AppTab, CallTaxiTrip, PatternAnalysis } from "@/lib/types";
+import { generateDemoTrips } from "@/lib/analyze";
 import { buildPatternAnalysisFromTrips } from "@/lib/pattern-data";
 import { upcomingAppointments } from "@/lib/calendar-storage";
 import { BestTimes } from "@/components/BestTimes";
@@ -20,6 +21,7 @@ export default function HomePage() {
   const [days, setDays] = useState(7);
   const [loadingHint, setLoadingHint] = useState("");
   const [calendarCount, setCalendarCount] = useState(0);
+  const [patternReload, setPatternReload] = useState(0);
 
   const refreshCalendarCount = useCallback(() => {
     setCalendarCount(upcomingAppointments(90).length);
@@ -48,36 +50,43 @@ export default function HomePage() {
 
         if (config.useLiveApi) {
           const allTrips: CallTaxiTrip[] = [];
-          let loaded = 0;
           const offsets = Array.from({ length: days }, (_, i) => i + 1);
 
-          await Promise.all(
-            offsets.map(async (offset) => {
+          for (const offset of offsets) {
+            if (cancelled) break;
+            setLoadingHint(`${offset}/${days}일 조회 중… (서울 API)`);
+            try {
               const res = await fetch(`/api/patterns/day?offset=${offset}`, {
-                signal: AbortSignal.timeout(35_000),
+                signal: AbortSignal.timeout(15_000),
               });
               const data = await res.json();
-              if (!res.ok) {
-                throw new Error(data.error ?? `${offset}일차 조회 실패`);
+              if (res.ok && Array.isArray(data.trips)) {
+                allTrips.push(...(data.trips as CallTaxiTrip[]));
               }
-              allTrips.push(...(data.trips as CallTaxiTrip[]));
-              loaded += 1;
-              if (!cancelled) {
-                setLoadingHint(
-                  `${loaded}/${days}일 불러옴… (날짜별로 나눠 조회합니다)`,
-                );
-              }
-            }),
-          );
-
-          if (allTrips.length === 0) {
-            throw new Error("조회된 이용 데이터가 없습니다.");
+            } catch {
+              /* 해당 날짜만 건너뜀 */
+            }
           }
 
-          const parsed = buildPatternAnalysisFromTrips(allTrips, days);
-          if (!cancelled) {
+          if (cancelled) return;
+
+          if (allTrips.length >= 80) {
+            const parsed = buildPatternAnalysisFromTrips(allTrips, days, "api");
             setAnalysis(parsed);
-            setNotice(parsed.notice ?? null);
+            setNotice(
+              parsed.notice ??
+                `${offsets.length}일 중 이용 데이터를 수집해 분석했습니다.`,
+            );
+          } else {
+            const parsed = buildPatternAnalysisFromTrips(
+              generateDemoTrips(days),
+              days,
+              "demo",
+            );
+            setAnalysis(parsed);
+            setNotice(
+              "서울 API 응답이 지연되어 데모 패턴을 표시합니다. 잠시 후 새로고침해 주세요.",
+            );
           }
         } else {
           const res = await fetch(`/api/patterns?days=${days}`, {
@@ -111,7 +120,7 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, [days, tab]);
+  }, [days, tab, patternReload]);
 
   return (
     <>
@@ -169,9 +178,16 @@ export default function HomePage() {
               </div>
             )}
             {error && (
-              <p className="rounded-lg bg-rose-50 px-4 py-3 text-rose-700">
-                {error}
-              </p>
+              <div className="rounded-lg bg-rose-50 px-4 py-3 text-rose-700 space-y-2">
+                <p>{error}</p>
+                <button
+                  type="button"
+                  onClick={() => setPatternReload((k) => k + 1)}
+                  className="text-sm font-medium text-rose-800 underline"
+                >
+                  다시 시도
+                </button>
+              </div>
             )}
             {analysis && !loading && (
               <div className="space-y-6">

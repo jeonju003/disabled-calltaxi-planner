@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const ymd = formatYmd(daysAgo(offset));
-    const trips = await fetchSampleTripsForDate(apiKey, ymd, 200);
+    const trips = await fetchSampleTripsForDate(apiKey, ymd, 150);
     return NextResponse.json(
       { trips, date: ymd, offset },
       {
