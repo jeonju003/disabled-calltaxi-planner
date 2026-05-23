@@ -135,6 +135,21 @@ export type FetchPageResult = {
   resultMessage: string;
 };
 
+const FETCH_TIMEOUT_MS = 15_000;
+
+async function fetchSeoulApi(url: string) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, {
+      signal: controller.signal,
+      next: { revalidate: 1800 },
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function fetchCallTaxiPage(
   apiKey: string,
   dateYmd: string,
@@ -143,7 +158,12 @@ export async function fetchCallTaxiPage(
   format: "json" | "xml" = "xml",
 ): Promise<FetchPageResult> {
   const url = `${BASE}/${apiKey}/${format}/disabledCalltaxi/${start}/${end}/${dateYmd}`;
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetchSeoulApi(url);
+  } catch {
+    throw new Error(`서울 API 요청 시간 초과 (${dateYmd})`);
+  }
   const text = await res.text();
 
   if (format === "xml" || text.trimStart().startsWith("<")) {
@@ -190,6 +210,20 @@ export async function fetchCallTaxiPage(
     resultCode: block?.RESULT?.CODE ?? data.RESULT?.CODE ?? "UNKNOWN",
     resultMessage: block?.RESULT?.MESSAGE ?? data.RESULT?.MESSAGE ?? "",
   };
+}
+
+/** 패턴 분석용: 하루 1회 호출로 충분한 표본만 수집 */
+export async function fetchSampleTripsForDate(
+  apiKey: string,
+  dateYmd: string,
+  sampleSize = 500,
+): Promise<CallTaxiTrip[]> {
+  const end = Math.min(Math.max(sampleSize, 100), 1000);
+  const page = await fetchCallTaxiPage(apiKey, dateYmd, 1, end, "xml");
+  if (page.resultCode !== "INFO-000" && page.trips.length === 0) {
+    throw new Error(`${page.resultCode}: ${page.resultMessage}`);
+  }
+  return page.trips;
 }
 
 export async function fetchAllTripsForDate(

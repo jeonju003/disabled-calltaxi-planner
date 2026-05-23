@@ -16,7 +16,8 @@ export default function HomePage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [days, setDays] = useState(14);
+  const [days, setDays] = useState(7);
+  const [loadingHint, setLoadingHint] = useState("");
   const [calendarCount, setCalendarCount] = useState(0);
 
   const refreshCalendarCount = useCallback(() => {
@@ -39,8 +40,11 @@ export default function HomePage() {
     async function load() {
       setLoading(true);
       setError(null);
+      setLoadingHint(`최근 ${days}일 데이터를 불러오는 중… (실제 API는 10~30초 걸릴 수 있습니다)`);
       try {
-        const res = await fetch(`/api/patterns?days=${days}`);
+        const res = await fetch(`/api/patterns?days=${days}`, {
+          signal: AbortSignal.timeout(120_000),
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "불러오기 실패");
         if (!cancelled) {
@@ -49,10 +53,19 @@ export default function HomePage() {
         }
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : "오류");
+          const msg =
+            e instanceof Error && e.name === "TimeoutError"
+              ? "분석 시간이 초과되었습니다. 분석 기간을 7일로 줄여 다시 시도해 주세요."
+              : e instanceof Error
+                ? e.message
+                : "오류";
+          setError(msg);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setLoadingHint("");
+        }
       }
     }
     load();
@@ -109,7 +122,12 @@ export default function HomePage() {
         {tab === "pattern" && (
           <>
             {loading && (
-              <p className="py-16 text-center text-slate-500">패턴 분석 중…</p>
+              <div className="py-16 text-center text-slate-500 space-y-2">
+                <p>패턴 분석 중…</p>
+                {loadingHint && (
+                  <p className="text-sm text-slate-400 px-4">{loadingHint}</p>
+                )}
+              </div>
             )}
             {error && (
               <p className="rounded-lg bg-rose-50 px-4 py-3 text-rose-700">

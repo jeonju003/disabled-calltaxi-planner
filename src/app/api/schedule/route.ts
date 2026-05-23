@@ -1,43 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { analyzeTrips, buildScheduleAdvice, generateDemoTrips } from "@/lib/analyze";
-import { daysAgo, fetchAllTripsForDate, formatYmd } from "@/lib/seoul-api";
+import { buildScheduleAdvice } from "@/lib/analyze";
+import { buildPatternAnalysis } from "@/lib/pattern-data";
 
-async function loadAnalysis(days: number) {
-  const rawKey = process.env.SEOUL_OPEN_API_KEY?.trim() ?? "";
-  const apiKey =
-    rawKey && !/^your_/i.test(rawKey) && rawKey !== "발급키" ? rawKey : "";
-  if (!apiKey) {
-    return analyzeTrips(generateDemoTrips(days), {
-      analyzedDays: days,
-      dataSource: "demo",
-      dateRange: { from: formatYmd(daysAgo(days)), to: formatYmd(daysAgo(1)) },
-    });
-  }
-
-  const allTrips = [];
-  for (let i = 1; i <= days; i += 1) {
-    const ymd = formatYmd(daysAgo(i));
-    try {
-      allTrips.push(...(await fetchAllTripsForDate(apiKey, ymd, 2000)));
-    } catch {
-      /* skip */
-    }
-  }
-
-  if (allTrips.length === 0) {
-    return analyzeTrips(generateDemoTrips(days), {
-      analyzedDays: days,
-      dataSource: "demo",
-      dateRange: { from: formatYmd(daysAgo(days)), to: formatYmd(daysAgo(1)) },
-    });
-  }
-
-  return analyzeTrips(allTrips, {
-    analyzedDays: days,
-    dataSource: "api",
-    dateRange: { from: formatYmd(daysAgo(days)), to: formatYmd(daysAgo(1)) },
-  });
-}
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,8 +20,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const days = Math.min(30, Math.max(7, body.analysisDays ?? 14));
-    const analysis = await loadAnalysis(days);
+    const days = Math.min(14, Math.max(3, body.analysisDays ?? 7));
+    const analysis = await buildPatternAnalysis(days);
     const advice = buildScheduleAdvice(
       analysis,
       body.appointmentAt,
