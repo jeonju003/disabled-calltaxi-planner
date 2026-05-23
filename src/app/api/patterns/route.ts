@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
       const date = daysAgo(i);
       const ymd = formatYmd(date);
       try {
-        const trips = await fetchAllTripsForDate(apiKey, ymd, 3000);
+        const trips = await fetchAllTripsForDate(apiKey, ymd, 800);
         allTrips.push(...trips);
       } catch {
         // 일부 날짜 실패 시 계속 진행
