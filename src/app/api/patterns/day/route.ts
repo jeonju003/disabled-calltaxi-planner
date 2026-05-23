@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { resolveApiKey } from "@/lib/pattern-data";
 import { daysAgo, fetchSampleTripsForDate, formatYmd } from "@/lib/seoul-api";
 
-export const maxDuration = 30;
+export const runtime = "edge";
+export const preferredRegion = ["icn1", "hnd1", "sin1"];
 
 export async function GET(req: NextRequest) {
   const apiKey = resolveApiKey();
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const ymd = formatYmd(daysAgo(offset));
-    const trips = await fetchSampleTripsForDate(apiKey, ymd, 250);
+    const trips = await fetchSampleTripsForDate(apiKey, ymd, 200);
     return NextResponse.json(
       { trips, date: ymd, offset },
       {

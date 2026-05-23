@@ -135,7 +135,7 @@ export type FetchPageResult = {
   resultMessage: string;
 };
 
-const FETCH_TIMEOUT_MS = 15_000;
+const FETCH_TIMEOUT_MS = 25_000;
 
 async function fetchSeoulApi(url: string) {
   const controller = new AbortController();
