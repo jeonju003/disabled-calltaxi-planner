@@ -5,12 +5,13 @@ export function AppHero() {
     <header className="card-hope-warm mb-6 overflow-hidden p-0">
       <div className="relative">
         <Image
-          src="/illustrations/hero-hope.svg"
-          alt=""
-          width={800}
-          height={320}
+          src="/images/hero-city-day.jpg"
+          alt="햇살이 비치는 도시 거리"
+          width={1400}
+          height={560}
           className="h-36 w-full object-cover object-center sm:h-44 md:h-52"
           priority
+          sizes="(max-width: 768px) 100vw, 896px"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-8 sm:px-6">
