@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { AppTab, PatternAnalysis } from "@/lib/types";
+import type { AppTab, CallTaxiTrip, PatternAnalysis } from "@/lib/types";
+import { buildPatternAnalysisFromTrips } from "@/lib/pattern-data";
 import { upcomingAppointments } from "@/lib/calendar-storage";
 import { BestTimes } from "@/components/BestTimes";
 import { DailyStatsPanel } from "@/components/DailyStatsPanel";
@@ -40,22 +41,60 @@ export default function HomePage() {
     async function load() {
       setLoading(true);
       setError(null);
-      setLoadingHint(`최근 ${days}일 데이터를 불러오는 중… (실제 API는 10~30초 걸릴 수 있습니다)`);
+      setLoadingHint("준비 중…");
       try {
-        const res = await fetch(`/api/patterns?days=${days}`, {
-          signal: AbortSignal.timeout(120_000),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "불러오기 실패");
-        if (!cancelled) {
-          setAnalysis(data);
-          setNotice(data.notice ?? null);
+        const configRes = await fetch("/api/config");
+        const config = (await configRes.json()) as { useLiveApi: boolean };
+
+        if (config.useLiveApi) {
+          const allTrips: CallTaxiTrip[] = [];
+          let loaded = 0;
+          const offsets = Array.from({ length: days }, (_, i) => i + 1);
+
+          await Promise.all(
+            offsets.map(async (offset) => {
+              const res = await fetch(`/api/patterns/day?offset=${offset}`, {
+                signal: AbortSignal.timeout(35_000),
+              });
+              const data = await res.json();
+              if (!res.ok) {
+                throw new Error(data.error ?? `${offset}일차 조회 실패`);
+              }
+              allTrips.push(...(data.trips as CallTaxiTrip[]));
+              loaded += 1;
+              if (!cancelled) {
+                setLoadingHint(
+                  `${loaded}/${days}일 불러옴… (날짜별로 나눠 조회합니다)`,
+                );
+              }
+            }),
+          );
+
+          if (allTrips.length === 0) {
+            throw new Error("조회된 이용 데이터가 없습니다.");
+          }
+
+          const parsed = buildPatternAnalysisFromTrips(allTrips, days);
+          if (!cancelled) {
+            setAnalysis(parsed);
+            setNotice(parsed.notice ?? null);
+          }
+        } else {
+          const res = await fetch(`/api/patterns?days=${days}`, {
+            signal: AbortSignal.timeout(30_000),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error ?? "불러오기 실패");
+          if (!cancelled) {
+            setAnalysis(data);
+            setNotice(data.notice ?? null);
+          }
         }
       } catch (e) {
         if (!cancelled) {
           const msg =
             e instanceof Error && e.name === "TimeoutError"
-              ? "분석 시간이 초과되었습니다. 분석 기간을 7일로 줄여 다시 시도해 주세요."
+              ? "분석 시간이 초과되었습니다. 분석 기간을 줄여 다시 시도해 주세요."
               : e instanceof Error
                 ? e.message
                 : "오류";

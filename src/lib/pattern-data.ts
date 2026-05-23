@@ -1,4 +1,4 @@
-import type { PatternAnalysis } from "./types";
+import type { CallTaxiTrip, PatternAnalysis } from "./types";
 import { analyzeTrips, generateDemoTrips } from "./analyze";
 import {
   daysAgo,
@@ -33,8 +33,7 @@ export async function buildPatternAnalysis(
   days: number,
 ): Promise<PatternAnalysis & { notice?: string }> {
   const apiKey = resolveApiKey();
-  const effectiveDays =
-    apiKey && process.env.VERCEL ? Math.min(days, 5) : days;
+  const effectiveDays = days;
   const from = daysAgo(effectiveDays);
   const to = daysAgo(1);
   const dateRange = { from: formatYmd(from), to: formatYmd(to) };
@@ -66,22 +65,49 @@ export async function buildPatternAnalysis(
     dateRange,
   });
 
-  const notices: string[] = [];
-  if (effectiveDays < days) {
-    notices.push(
-      `배포 환경 제한으로 최근 ${effectiveDays}일 데이터만 분석했습니다.`,
-    );
-  }
-  if (days > 7) {
-    notices.push("날짜별 약 300~350건을 샘플링해 분석합니다.");
-  }
-
   return {
     ...analysis,
     dateRange: {
       from: ymdToIso(analysis.dateRange.from),
       to: ymdToIso(analysis.dateRange.to),
     },
-    notice: notices.length > 0 ? notices.join(" ") : undefined,
+    notice:
+      days > 7
+        ? "날짜별 약 300건을 샘플링해 분석합니다."
+        : undefined,
+  };
+}
+
+export function normalizeTrips(trips: CallTaxiTrip[]): CallTaxiTrip[] {
+  return trips.map((t) => ({
+    ...t,
+    scheduledAt: t.scheduledAt ? new Date(t.scheduledAt) : null,
+    dispatchAt: t.dispatchAt ? new Date(t.dispatchAt) : null,
+    boardingAt: t.boardingAt ? new Date(t.boardingAt) : null,
+  }));
+}
+
+export function buildPatternAnalysisFromTrips(
+  trips: CallTaxiTrip[],
+  days: number,
+) {
+  const normalized = normalizeTrips(trips);
+  const from = daysAgo(days);
+  const to = daysAgo(1);
+  const analysis = analyzeTrips(normalized, {
+    analyzedDays: days,
+    dataSource: "api",
+    dateRange: { from: formatYmd(from), to: formatYmd(to) },
+  });
+  return {
+    ...analysis,
+    dateRange: {
+      from: ymdToIso(analysis.dateRange.from),
+      to: ymdToIso(analysis.dateRange.to),
+    },
+    notice:
+      days > 7
+        ? "날짜별 약 250건을 샘플링해 분석합니다."
+        : undefined,
   };
 }
